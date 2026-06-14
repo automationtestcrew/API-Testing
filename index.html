@@ -3,364 +3,885 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Practice: All Locators | Playwright Mastery</title>
+  <title>Swagger UI - Login API</title>
   
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Open Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg-body: #f4f7f9;
-      --bg-card: #ffffff;
-      --bg-input: #ffffff;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --text-main: #1f2937;
-      --text-muted: #6b7280;
-      --border: #e5e7eb;
-      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --primary-blue: #61affe;
+      --primary-blue-dark: #4990e2;
+      --bg-light: #fafafa;
+      --text-main: #3b4151;
+      --header-bg: #1b1b1b;
+      --border-color: #d9d9d9;
+      --post-bg: #ebf3fb;
+      --post-border: #61affe;
+      --success-green: #49cc90;
+      --error-red: #f93e3e;
+      --warn-orange: #fca130;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background-color: var(--bg-body);
+      font-family: 'Open Sans', sans-serif;
+      background-color: var(--bg-light);
       color: var(--text-main);
-      height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    /* Header */
+    .topbar {
+      background-color: var(--header-bg);
+      padding: 10px 20px;
       display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      align-items: center;
+      justify-content: space-between;
+      height: 50px;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .logo-text { color: white; font-weight: 700; font-size: 20px; display: flex; align-items: center; gap: 5px; }
+    .logo-text span { color: #85ea2d; } /* Swagger green */
+    
+    .topbar-right select {
+      padding: 5px 10px;
+      background: white;
+      border: 1px solid #333;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
       padding: 20px;
     }
 
-    .container {
-      width: 100%;
-      max-width: 1600px;
-      margin: 0 auto;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    header {
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 15px;
-      margin-bottom: 5px;
-    }
-
-    header h1 {
-      font-size: 1.5rem;
+    /* Info Block */
+    .info { margin-bottom: 40px; }
+    .info h1 { font-size: 36px; margin-bottom: 10px; font-weight: 700; }
+    .info .version {
+      background: #7d8492;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 10px;
       font-weight: 700;
-      color: var(--text-main);
+      vertical-align: middle;
+      margin-left: 10px;
     }
+    .info p { margin-bottom: 10px; font-size: 14px; }
+    .info .base-url { font-size: 12px; font-family: monospace; color: #666; }
+    .info .schemes { margin-top: 15px; font-size: 13px; font-weight: 600; }
 
-    header p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    .locator-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 15px;
-      flex: 1;
-    }
-
-    .practice-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .card-header {
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
-    }
-
-    .card-header h2 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .card-header p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    input[type="text"], input[type="password"], input[type="email"] {
-      width: 100%;
-      padding: 0.5rem 0.75rem;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text-main);
-      font-size: 0.85rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input:focus {
-      border-color: var(--accent);
-    }
-
-    .btn {
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #ffffff;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-    }
-
-    .btn-outline {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      color: var(--text-main);
-    }
-
-    .btn-outline:hover {
-      background: #f9fafb;
-      border-color: var(--text-muted);
-    }
-
-    .success-label {
-      font-size: 0.75rem;
-      color: #059669; /* Green */
-      font-weight: 600;
-      display: none;
-      padding: 4px 8px;
-      background: #ecfdf5;
+    /* Endpoint Bar */
+    .opblock-tag-section { margin-top: 20px; }
+    .opblock {
+      border: 1px solid var(--post-border);
       border-radius: 4px;
-      text-align: center;
+      background: var(--post-bg);
+      margin-bottom: 10px;
+      overflow: hidden;
     }
 
-    .checkbox-container {
+    .opblock-summary {
+      padding: 5px 10px;
       display: flex;
       align-items: center;
-      gap: 10px;
       cursor: pointer;
-      font-size: 0.8rem;
-      color: var(--text-main);
+      user-select: none;
     }
 
-    input[type="checkbox"] {
-      width: 16px; height: 16px;
-      cursor: pointer;
+    .opblock-method {
+      background: var(--primary-blue);
+      color: white;
+      font-weight: 700;
+      min-width: 80px;
+      padding: 6px 0;
+      text-align: center;
+      border-radius: 3px;
+      font-size: 14px;
+      margin-right: 10px;
     }
 
-    .image-placeholder {
+    .opblock-path {
+      font-weight: 600;
+      font-family: monospace;
+      font-size: 16px;
       flex: 1;
-      background: #f3f4f6;
-      border-radius: 6px;
+    }
+
+    .opblock-description {
+      font-size: 13px;
+      color: #3b4151;
+      margin-right: 20px;
+    }
+
+    .arrow {
+      border: solid #3b4151;
+      border-width: 0 2px 2px 0;
+      display: inline-block;
+      padding: 3px;
+      transform: rotate(45deg);
+      transition: transform 0.2s;
+    }
+    .expanded .arrow { transform: rotate(-135deg); }
+
+    /* Expanded Content */
+    .opblock-body {
+      background: #fff;
+      border-top: 1px solid var(--post-border);
+      display: none;
+      padding: 20px;
+    }
+    .expanded .opblock-body { display: block; }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 5px 23px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Open Sans', sans-serif;
+      transition: all 0.3s;
+    }
+    .btn-try {
+      background: white;
+      border: 2px solid var(--primary-blue);
+      color: var(--primary-blue);
+    }
+    .btn-try:hover { background: rgba(97, 175, 254, 0.1); }
+    .btn-cancel {
+      background: white;
+      border: 2px solid var(--error-red);
+      color: var(--error-red);
+    }
+    .btn-execute {
+      background: var(--primary-blue-dark);
+      border: 2px solid var(--primary-blue-dark);
+      color: white;
+      margin-top: 10px;
+      width: 100%;
+      font-size: 14px;
+      padding: 10px;
+    }
+    .btn-clear {
+      background: white;
+      border: 2px solid #666;
+      color: #666;
+      margin-top: 10px;
+      margin-left: 10px;
+      padding: 10px 23px;
+    }
+
+    /* Body/Parameters */
+    .opblock-section { margin-bottom: 20px; }
+    .parameter-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .parameter-table th { text-align: left; font-size: 12px; border-bottom: 1px solid #ddd; padding: 10px 5px; }
+    .parameter-table td { padding: 10px 5px; font-size: 13px; border-bottom: 1px solid #eee; }
+
+    .model-example-panel { margin-top: 10px; }
+    .tab-header { display: flex; gap: 10px; border-bottom: 1px solid #ddd; margin-bottom: 10px; }
+    .tab-link {
+      padding: 5px 10px;
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-link.active { color: var(--text-main); border-bottom-color: #333; font-weight: 700; }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      background: #fdfdfd;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 13px;
+      color: #3b4151;
+      resize: vertical;
+    }
+    textarea:focus { outline: none; border-color: #888; }
+    textarea[readonly] { background: #f7f7f7; cursor: default; }
+
+    /* Responses */
+    .response-row { border-bottom: 1px solid #eee; }
+    .response-header {
+      padding: 10px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      border: 1px dashed var(--border);
+      gap: 20px;
+      cursor: pointer;
     }
+    .response-col-code { font-weight: 700; font-size: 14px; min-width: 50px; }
+    .response-col-desc { font-size: 13px; flex: 1; }
+    
+    .code-200 { color: var(--success-green); }
+    .code-400, .code-401, .code-404, .code-500 { color: var(--error-red); }
+    .code-422, .code-423 { color: var(--warn-orange); }
 
-    footer {
-      text-align: center;
-      padding: 10px 0;
-      border-top: 1px solid var(--border);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
+    .response-body { display: none; padding: 15px; background: #fafafa; border-top: 1px solid #eee; }
+    .response-row.expanded .response-body { display: block; }
 
-    @media (max-width: 1200px) {
-      .locator-grid { grid-template-columns: repeat(2, 1fr); overflow-y: auto; height: auto; }
-      body { height: auto; overflow: auto; }
+    /* Execution Results */
+    .execute-result { margin-top: 20px; border-top: 2px solid #333; padding-top: 20px; }
+    .result-block { margin-bottom: 20px; }
+    .result-block h4 { font-size: 13px; margin-bottom: 5px; font-weight: 700; }
+    .code-block {
+      background: #333;
+      color: #fff;
+      padding: 15px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-all;
     }
+    .response-panel {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+      padding: 10px;
+    }
+    .response-meta { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    .status-badge { font-weight: 700; font-size: 13px; }
+
+    /* Schemas Section */
+    .schemas-container {
+      margin-top: 40px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .schemas-header {
+      padding: 10px 20px;
+      background: #fafafa;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+    }
+    .schemas-header h2 { font-size: 16px; font-weight: 700; color: #3b4151; }
+    .schemas-body { display: none; }
+    .schemas-container.expanded .schemas-body { display: block; }
+
+    .schema-row { border-bottom: 1px solid #eee; }
+    .schema-summary {
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: monospace;
+    }
+    .schema-details { display: none; padding: 10px 20px; background: #f9f9f9; }
+    .schema-row.expanded .schema-details { display: block; }
+
+    .field-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .field-table td { padding: 5px; border-bottom: 1px solid #eee; }
+    .field-name { font-weight: 700; font-family: monospace; }
+    .field-type { color: #888; margin-left: 10px; }
+    .field-required { color: #f00; font-weight: 700; margin-left: 5px; }
+
+    /* Utilities */
+    .hidden { display: none; }
+    .mono { font-family: monospace; }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-text">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="white"/>
+          <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        swagger
+      </div>
+    </div>
+    <div class="topbar-right" style="display: flex; align-items: center; gap: 20px;">
+      <a href="https://www.youtube.com/@automationtestcrew" target="_blank" style="color: white; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000" xmlns="http://www.w3.org/2000/svg">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z" />
+          <path d="M9.545 15.568l6.273-3.568-6.273-3.568v7.136z" fill="white" />
+        </svg>
+        AutomationTestCrew
+      </a>
+      <select>
+        <option>https://api.example.com/v1</option>
+        <option>https://staging.example.com/v1</option>
+      </select>
+    </div>
+  </header>
+
   <div class="container">
-    <header>
-      <h1>Playwright Locators Practice</h1>
-      <p>Simplified all-in-one testing dashboard</p>
-    </header>
-
-    <div class="locator-grid">
-      
-      <!-- 1. getByRole -->
-      <section class="practice-card">
-        <div class="card-header">
-          <h2>1. getByRole</h2>
-          <p>Semantic element targeting</p>
-        </div>
-        <div class="form-group">
-          <h3 role="heading" aria-level="3">User Account</h3>
-        </div>
-        <label class="checkbox-container">
-          <input type="checkbox" role="checkbox">
-          Accept Terms
-        </label>
-        <button class="btn btn-primary" role="button" onclick="showFeedback(this, 'Subscribed!')">Submit Action</button>
-        <div class="success-label">✓ Action Confirmed</div>
-      </section>
-
-      <!-- 2. getByLabel -->
-      <section class="practice-card">
-        <div class="card-header">
-          <h2>2. getByLabel</h2>
-          <p>Label-input association</p>
-        </div>
-        <div class="form-group">
-          <label for="first-name">First Name</label>
-          <input type="text" id="first-name" placeholder="John">
-        </div>
-        <div class="form-group">
-          <label for="last-name">Last Name</label>
-          <input type="text" id="last-name" placeholder="Doe">
-        </div>
-        <button class="btn btn-primary" onclick="showFeedback(this, 'Saved!')">Update Profile</button>
-        <div class="success-label">✓ Profile Saved</div>
-      </section>
-
-      <!-- 3. getByPlaceholder -->
-      <section class="practice-card">
-        <div class="card-header">
-          <h2>3. getByPlaceholder</h2>
-          <p>Target via hint text</p>
-        </div>
-        <div class="form-group">
-          <input type="email" placeholder="email@example.com">
-        </div>
-        <div class="form-group">
-          <input type="password" placeholder="Password123">
-        </div>
-        <button class="btn btn-primary" onclick="showFeedback(this, 'Signed In!')">Sign In</button>
-        <div class="success-label">✓ Login Successful</div>
-      </section>
-
-      <!-- 4. getByText -->
-      <section class="practice-card">
-        <div class="card-header">
-          <h2>4. getByText</h2>
-          <p>Target via visible text</p>
-        </div>
-        <div class="form-group">
-          <p>Current Balance: <strong>$1,250.00</strong></p>
-          <p style="font-size: 0.75rem; color: var(--text-muted);">Last updated: 2 minutes ago</p>
-        </div>
-        <button class="btn btn-primary" onclick="showFeedback(this, 'Refreshed!')">Refresh Data</button>
-        <div class="success-label">✓ Data Updated</div>
-      </section>
-
-      <!-- 5. getByAltText -->
-      <section class="practice-card">
-        <div class="card-header">
-          <h2>5. getByAltText</h2>
-          <p>Target via image alt text</p>
-        </div>
-        <div style="display: flex; gap: 10px; flex: 1;">
-          <div class="image-placeholder">
-             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3C/svg%3E" alt="User Avatar" onclick="showFeedback(this, 'Avatar Clicked!')" style="cursor: pointer">
-          </div>
-          <div class="image-placeholder">
-             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'%3E%3C/rect%3E%3C/svg%3E" alt="App Logo" onclick="showFeedback(this, 'Logo Clicked!')" style="cursor: pointer">
-          </div>
-        </div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center;">Target the "User Avatar" or "App Logo"</div>
-        <div class="success-label">✓ Image Found</div>
-      </section>
-
-      <!-- 6. getByTitle -->
-      <section class="practice-card">
-        <div class="card-header">
-          <h2>6. getByTitle</h2>
-          <p>Target via title attribute</p>
-        </div>
-        <div style="display: flex; gap: 10px; justify-content: center; margin: auto 0;">
-          <button class="btn btn-outline" title="Close Workspace" onclick="showFeedback(this, 'Workspace Closed!')">✕</button>
-          <button class="btn btn-outline" title="Reload System" onclick="showFeedback(this, 'System Reloaded!')">↻</button>
-          <span title="More Info" style="cursor: help;">ⓘ</span>
-        </div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center;">Hover for tooltips</div>
-        <div class="success-label">✓ Control Activated</div>
-      </section>
-
-      <!-- 7. getByTestId -->
-      <section class="practice-card">
-        <div class="card-header">
-          <h2>7. getByTestId</h2>
-          <p>Resilient test IDs</p>
-        </div>
-        <div data-testid="status-banner" style="padding: 10px; background: #fef3c7; color: #92400e; border-radius: 4px; font-size: 0.75rem; text-align: center;">
-          Maintenance in progress
-        </div>
-        <button class="btn btn-primary" data-testid="download-report" onclick="showFeedback(this, 'Downloading...')">Download Report</button>
-        <div class="success-label">✓ Starting Download</div>
-      </section>
-
-      <!-- 8. page.locator -->
-      <section class="practice-card">
-        <div class="card-header">
-          <h2>8. page.locator</h2>
-          <p>CSS & XPath targeting</p>
-        </div>
-        <div class="form-group">
-          <input type="text" id="target-node" placeholder="#target-node">
-        </div>
-        <button class="btn btn-outline custom-trigger" onclick="showFeedback(this, 'Node Selected!')">Select Node</button>
-        <div class="success-label">✓ CSS Node Selected</div>
-      </section>
-
+    
+    <!-- Info Section -->
+    <div class="info">
+      <h1>Login API <span class="version">1.0.0</span></h1>
+      <p>API for authenticating users. Secure your application with JWT-based login.</p>
+      <div class="base-url">[ Base URL: api.example.com/v1 ]</div>
+      <div class="schemes">Schemes: HTTPS</div>
     </div>
 
-    <footer>
-      Playwright Mastery | <a href="index.html" style="color: var(--accent); text-decoration: none;">Back to Home</a>
-    </footer>
+    <!-- Endpoint Section -->
+    <div class="opblock-tag-section">
+      <div class="opblock expanded" id="login-op">
+        <div class="opblock-summary" onclick="toggleMainOp()">
+          <div class="opblock-method">POST</div>
+          <div class="opblock-path">/auth/login</div>
+          <div class="opblock-description">User Login</div>
+          <div class="arrow"></div>
+        </div>
+        
+        <div class="opblock-body">
+          <div class="section-title">
+            Parameters
+            <button class="btn btn-try" id="try-out-btn" onclick="toggleTryOut()">Try it out</button>
+            <button class="btn btn-cancel hidden" id="cancel-btn" onclick="toggleTryOut()">Cancel</button>
+          </div>
+          
+          <div class="opblock-section">
+            <p style="font-size: 13px; color: #666;">No parameters</p>
+          </div>
+
+          <div class="section-title">Request body</div>
+          <div class="opblock-section">
+            <div style="font-size: 12px; margin-bottom: 5px;">
+              Content type <span style="font-weight: 700;">application/json</span>
+            </div>
+            
+            <div class="model-example-panel">
+              <div class="tab-header">
+                <div class="tab-link active" id="tab-example" onclick="switchReqTab('example')">Example Value</div>
+                <div class="tab-link" id="tab-schema" onclick="switchReqTab('schema')">Schema</div>
+              </div>
+              
+              <!-- Example View -->
+              <div id="view-example">
+                <textarea id="request-body-input" readonly>{
+  "email": "user@example.com",
+  "password": "Secret@123"
+}</textarea>
+              </div>
+
+              <!-- Schema View -->
+              <div id="view-schema" class="hidden">
+                <div style="font-family: monospace; font-size: 12px; background: #f7f7f7; padding: 15px; border-radius: 4px;">
+                  {<br>
+                  &nbsp;&nbsp;<span style="color: #3b4151; font-weight: 700;">email</span> (<span style="color: #999;">string</span>): Registered email address <span style="color:red">*</span>,<br>
+                  &nbsp;&nbsp;<span style="color: #3b4151; font-weight: 700;">password</span> (<span style="color: #999;">string</span>): Account password (min 8 chars) <span style="color:red">*</span><br>
+                  }
+                </div>
+              </div>
+
+              <div id="execution-controls" class="hidden">
+                <button class="btn btn-execute" onclick="execute()">Execute</button>
+                <button class="btn btn-clear" onclick="clearResult()">Clear</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Responses -->
+          <div class="section-title">Responses</div>
+          <div class="opblock-section">
+            <table class="parameter-table">
+              <thead>
+                <tr>
+                  <th style="width: 100px;">Code</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+            </table>
+            
+            <div id="responses-list">
+              <!-- 200 -->
+              <div class="response-row" id="row-200">
+                <div class="response-header" onclick="toggleResponseRow('row-200')">
+                  <div class="response-col-code code-200">200</div>
+                  <div class="response-col-desc">Login successful</div>
+                </div>
+                <div class="response-body">
+                  <div class="mono" style="font-size: 12px;">LoginSuccess Schema</div>
+                </div>
+              </div>
+              
+              <!-- 400 -->
+              <div class="response-row" id="row-400">
+                <div class="response-header" onclick="toggleResponseRow('row-400')">
+                  <div class="response-col-code code-400">400</div>
+                  <div class="response-col-desc">Missing/empty fields</div>
+                </div>
+                <div class="response-body">
+                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
+                </div>
+              </div>
+
+              <!-- 401 -->
+              <div class="response-row" id="row-401">
+                <div class="response-header" onclick="toggleResponseRow('row-401')">
+                  <div class="response-col-code code-401">401</div>
+                  <div class="response-col-desc">Wrong password</div>
+                </div>
+                <div class="response-body">
+                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
+                </div>
+              </div>
+
+              <!-- 404 -->
+              <div class="response-row" id="row-404">
+                <div class="response-header" onclick="toggleResponseRow('row-404')">
+                  <div class="response-col-code code-404">404</div>
+                  <div class="response-col-desc">Email not found</div>
+                </div>
+                <div class="response-body">
+                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
+                </div>
+              </div>
+
+              <!-- 422 -->
+              <div class="response-row" id="row-422">
+                <div class="response-header" onclick="toggleResponseRow('row-422')">
+                  <div class="response-col-code code-422">422</div>
+                  <div class="response-col-desc">Invalid email format or password too short</div>
+                </div>
+                <div class="response-body">
+                  <div class="mono" style="font-size: 12px;">ValidationErrorResponse Schema</div>
+                </div>
+              </div>
+
+              <!-- 423 -->
+              <div class="response-row" id="row-423">
+                <div class="response-header" onclick="toggleResponseRow('row-423')">
+                  <div class="response-col-code code-423">423</div>
+                  <div class="response-col-desc">Account locked</div>
+                </div>
+                <div class="response-body">
+                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
+                </div>
+              </div>
+
+              <!-- 500 -->
+              <div class="response-row" id="row-500">
+                <div class="response-header" onclick="toggleResponseRow('row-500')">
+                  <div class="response-col-code code-500">500</div>
+                  <div class="response-col-desc">Internal server error</div>
+                </div>
+                <div class="response-body">
+                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Execution Results Container -->
+          <div id="execute-result-container" class="execute-result hidden">
+            <div class="result-block">
+              <h4>Curl</h4>
+              <div class="code-block" id="curl-display"></div>
+            </div>
+            <div class="result-block">
+              <h4>Request URL</h4>
+              <div class="code-block" style="background: #f7f7f7; color: #333;" id="request-url-display"></div>
+            </div>
+            <div class="result-block">
+              <h4>Server response</h4>
+              <div class="response-panel">
+                <div class="response-meta">
+                  <span>Code</span>
+                  <span id="res-code-badge" class="status-badge"></span>
+                </div>
+                <h4>Details</h4>
+                <textarea id="response-body-output" readonly style="min-height: 200px; margin-bottom: 15px;"></textarea>
+                <h4>Response headers</h4>
+                <div class="code-block" style="background: #f7f7f7; color: #333; padding: 10px;">
+content-type: application/json; charset=utf-8 
+date: <span id="res-date"></span> 
+server: example-api/1.0.0 
+x-powered-by: Express
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schemas Section -->
+    <div class="schemas-container" id="schemas-section">
+      <div class="schemas-header" onclick="toggleSchemas()">
+        <h2>Schemas</h2>
+        <div class="arrow"></div>
+      </div>
+      <div class="schemas-body">
+        
+        <!-- LoginRequest -->
+        <div class="schema-row" id="schema-login-req">
+          <div class="schema-summary" onclick="toggleSchemaRow('schema-login-req')">
+            <span>LoginRequest</span>
+            <div class="arrow"></div>
+          </div>
+          <div class="schema-details">
+            <table class="field-table">
+              <tr><td class="field-name">email</td><td class="field-type">string</td><td class="field-required">*</td><td>Registered email address</td></tr>
+              <tr><td class="field-name">password</td><td class="field-type">string</td><td class="field-required">*</td><td>Account password (min 8 characters)</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- LoginSuccess -->
+        <div class="schema-row" id="schema-login-success">
+          <div class="schema-summary" onclick="toggleSchemaRow('schema-login-success')">
+            <span>LoginSuccess</span>
+            <div class="arrow"></div>
+          </div>
+          <div class="schema-details">
+            <table class="field-table">
+              <tr><td class="field-name">token</td><td class="field-type">string</td><td></td><td>JWT authentication token</td></tr>
+              <tr><td class="field-name">tokenType</td><td class="field-type">string</td><td></td><td>Always "Bearer"</td></tr>
+              <tr><td class="field-name">expiresIn</td><td class="field-type">integer</td><td></td><td>Lifetime in seconds (86400)</td></tr>
+              <tr><td class="field-name">user</td><td class="field-type">UserObject</td><td></td><td>User profile details</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- UserObject -->
+        <div class="schema-row" id="schema-user-obj">
+          <div class="schema-summary" onclick="toggleSchemaRow('schema-user-obj')">
+            <span>UserObject</span>
+            <div class="arrow"></div>
+          </div>
+          <div class="schema-details">
+            <table class="field-table">
+              <tr><td class="field-name">id</td><td class="field-type">string</td><td></td><td>Unique user identifier</td></tr>
+              <tr><td class="field-name">name</td><td class="field-type">string</td><td></td><td>User's full name</td></tr>
+              <tr><td class="field-name">email</td><td class="field-type">string</td><td></td><td>User's email</td></tr>
+              <tr><td class="field-name">role</td><td class="field-type">string</td><td></td><td>One of: admin, editor, viewer</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- ErrorResponse -->
+        <div class="schema-row" id="schema-error">
+          <div class="schema-summary" onclick="toggleSchemaRow('schema-error')">
+            <span>ErrorResponse</span>
+            <div class="arrow"></div>
+          </div>
+          <div class="schema-details">
+            <table class="field-table">
+              <tr><td class="field-name">status</td><td class="field-type">integer</td><td></td><td>HTTP status code</td></tr>
+              <tr><td class="field-name">error</td><td class="field-type">string</td><td></td><td>Error title</td></tr>
+              <tr><td class="field-name">message</td><td class="field-type">string</td><td></td><td>Error explanation</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- ValidationErrorResponse -->
+        <div class="schema-row" id="schema-validation">
+          <div class="schema-summary" onclick="toggleSchemaRow('schema-validation')">
+            <span>ValidationErrorResponse</span>
+            <div class="arrow"></div>
+          </div>
+          <div class="schema-details">
+            <table class="field-table">
+              <tr><td class="field-name">status</td><td class="field-type">integer</td><td></td><td>422</td></tr>
+              <tr><td class="field-name">details</td><td class="field-type">array[object]</td><td></td><td>List of field errors</td></tr>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- API Contract Section -->
+    <div class="schemas-container" id="contract-section" style="margin-top: 20px;">
+      <div class="schemas-header" onclick="toggleContract()">
+        <h2>API Description (JIRA Ticket #AUT-101)</h2>
+        <div class="arrow"></div>
+      </div>
+      <div class="schemas-body" id="contract-body" style="padding: 20px;">
+        <div style="margin-bottom: 20px; padding: 15px; background: rgba(97, 175, 254, 0.05); border-left: 4px solid var(--primary-blue); border-radius: 0 4px 4px 0;">
+          <h4 style="font-size: 14px; color: var(--primary-blue); margin-bottom: 8px;">Project Context</h4>
+          <p style="font-size: 13px; color: #3b4151; margin-bottom: 8px;">
+            <strong>What API:</strong> This is a RESTful <strong>Authentication API (Login API)</strong> that handles user credential validation and session token generation.
+          </p>
+          <p style="font-size: 13px; color: #3b4151; margin-bottom: 8px;">
+            <strong>Why it will be used:</strong> It serves as a controlled sandbox for <strong>API Automation Testing</strong>. It will be used to practice schema validation, negative testing, and security assertions using tools like Playwright and Supertest.
+          </p>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(97, 175, 254, 0.3);">
+            <strong style="font-size: 13px; color: #3b4151; display: block; margin-bottom: 5px;">How it should work:</strong>
+            <ol style="font-size: 12px; color: #3b4151; padding-left: 20px;">
+              <li style="margin-bottom: 4px;"><strong>Request:</strong> Client sends a POST request with <code>email</code> and <code>password</code>.</li>
+              <li style="margin-bottom: 4px;"><strong>Format Check:</strong> System validates email format and ensures password is ≥ 8 chars (returns 422 if fail).</li>
+              <li style="margin-bottom: 4px;"><strong>Verification:</strong> System verifies credentials against the database (returns 401 or 404 if fail).</li>
+              <li style="margin-bottom: 4px;"><strong>Security:</strong> After 5 consecutive failures, the account is locked for 30 minutes (returns 423).</li>
+              <li><strong>Success:</strong> Returns 200 OK with a 24-hour JWT <code>token</code> and the <code>user</code> profile object.</li>
+            </ol>
+          </div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+          The following is the plain-text API specification from the development ticket. 
+          Use this as a reference for expected request and response structures.
+        </p>
+        <div class="code-block" style="background: #f7f7f7; color: #333; position: relative;">
+          <button class="btn btn-try" style="position: absolute; top: 10px; right: 10px; padding: 2px 10px; font-size: 10px;" onclick="copyContract()">Copy Text</button>
+          <pre id="yaml-content" style="margin: 0; font-size: 12px; line-height: 1.5; color: #3b4151;">Endpoint: POST /auth/login
+
+### Request Body (application/json):
+{
+  "email": "user@example.com",      // required, valid email format
+  "password": "Secret@123"          // required, minimum 8 characters
+}
+
+### Responses:
+
+200 — Login Successful:
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer",
+  "expiresIn": 86400,
+  "user": {
+    "id": "usr_01HXYZ123456",
+    "name": "John Doe",
+    "email": "user@example.com",
+    "role": "admin"         // enum: admin, editor, viewer
+  }
+}
+
+400 — Bad Request (missing/empty fields):
+{
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Email and password are required"
+}
+
+401 — Unauthorized (wrong password):
+{
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Invalid email or password"
+}
+
+404 — Not Found (email doesn't exist):
+{
+  "status": 404,
+  "error": "Not Found",
+  "message": "No account found with this email address"
+}
+
+422 — Validation Error (invalid format):
+{
+  "status": 422,
+  "error": "Unprocessable Entity",
+  "message": "Validation failed",
+  "details": [
+    { "field": "email", "issue": "Must be a valid email address" },
+    { "field": "password", "issue": "Minimum 8 characters required" }
+  ]
+}
+
+423 — Locked (5 failed attempts):
+{
+  "status": 423,
+  "error": "Locked",
+  "message": "Account locked due to too many failed attempts. Try again after 30 minutes."
+}
+
+500 — Internal Server Error:
+{
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "Something went wrong. Please try again later."
+}</pre>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    function showFeedback(btn, message) {
-      const card = btn.closest('.practice-card');
-      const label = card.querySelector('.success-label');
-      
-      if (message) {
-        label.textContent = '✓ ' + message;
+    // --- UI Interactions ---
+
+    function toggleMainOp() {
+      document.getElementById('login-op').classList.toggle('expanded');
+    }
+
+    function toggleResponseRow(id) {
+      document.getElementById(id).classList.toggle('expanded');
+    }
+
+    function toggleSchemas() {
+      document.getElementById('schemas-section').classList.toggle('expanded');
+    }
+
+    function toggleContract() {
+      const section = document.getElementById('contract-section');
+      section.classList.toggle('expanded');
+      const body = document.getElementById('contract-body');
+      body.style.display = section.classList.contains('expanded') ? 'block' : 'none';
+    }
+
+    function copyContract() {
+      const yaml = document.getElementById('yaml-content').innerText;
+      navigator.clipboard.writeText(yaml).then(() => {
+        const btn = event.target;
+        const original = btn.innerText;
+        btn.innerText = "Copied! ✓";
+        btn.style.borderColor = "#49cc90";
+        btn.style.color = "#49cc90";
+        setTimeout(() => {
+          btn.innerText = original;
+          btn.style.borderColor = "";
+          btn.style.color = "";
+        }, 2000);
+      });
+    }
+
+    function toggleSchemaRow(id) {
+      document.getElementById(id).classList.toggle('expanded');
+    }
+
+    function switchReqTab(tab) {
+      document.getElementById('tab-example').classList.remove('active');
+      document.getElementById('tab-schema').classList.remove('active');
+      document.getElementById('view-example').classList.add('hidden');
+      document.getElementById('view-schema').classList.add('hidden');
+
+      if (tab === 'example') {
+        document.getElementById('tab-example').classList.add('active');
+        document.getElementById('view-example').classList.remove('hidden');
+      } else {
+        document.getElementById('tab-schema').classList.add('active');
+        document.getElementById('view-schema').classList.remove('hidden');
       }
+    }
+
+    function toggleTryOut() {
+      const isTryMode = document.getElementById('try-out-btn').classList.toggle('hidden');
+      document.getElementById('cancel-btn').classList.toggle('hidden');
+      document.getElementById('execution-controls').classList.toggle('hidden');
       
-      label.style.display = 'block';
-      setTimeout(() => {
-        label.style.display = 'none';
-      }, 2000);
+      const textarea = document.getElementById('request-body-input');
+      if (isTryMode) {
+        textarea.removeAttribute('readonly');
+        textarea.focus();
+      } else {
+        textarea.setAttribute('readonly', 'true');
+        clearResult();
+      }
+    }
+
+    function clearResult() {
+      document.getElementById('execute-result-container').classList.add('hidden');
+    }
+
+    // --- Simulation Logic ---
+
+    function execute() {
+      const inputStr = document.getElementById('request-body-input').value;
+      const curlDisplay = document.getElementById('curl-display');
+      const urlDisplay = document.getElementById('request-url-display');
+      const resultContainer = document.getElementById('execute-result-container');
+      
+      const baseUrl = "https://api.example.com/v1";
+      const path = "/auth/login";
+      const fullUrl = baseUrl + path;
+
+      // Update URL and Curl display
+      urlDisplay.innerText = fullUrl;
+      curlDisplay.innerText = `curl -X 'POST' \\\n  '${fullUrl}' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '${inputStr.replace(/'/g, "\\'")}'`;
+
+      resultContainer.classList.remove('hidden');
+      resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      let input;
+      try {
+        input = JSON.parse(inputStr);
+      } catch (e) {
+        setResponse(400, { status: 400, error: "Bad Request", message: "Invalid JSON format" });
+        return;
+      }
+
+      // Simulation Rules
+      const email = input.email || "";
+      const password = input.password || "";
+
+      if (!email || !password) {
+        setResponse(400, { status: 400, error: "Bad Request", message: "Email and password are required" });
+      } else if (email === "locked@example.com") {
+        setResponse(423, { status: 423, error: "Locked", message: "Account locked due to too many failed attempts. Try again after 30 minutes." });
+      } else if (email === "notfound@example.com") {
+        setResponse(404, { status: 404, error: "Not Found", message: "No account found with this email address" });
+      } else if (email === "error@example.com") {
+        setResponse(500, { status: 500, error: "Internal Server Error", message: "Something went wrong. Please try again later." });
+      } else if (!email.includes("@")) {
+        setResponse(422, { 
+          status: 422, error: "Unprocessable Entity", message: "Validation failed", 
+          details: [{ field: "email", issue: "Must be a valid email address" }] 
+        });
+      } else if (password.length < 8) {
+        setResponse(422, { 
+          status: 422, error: "Unprocessable Entity", message: "Validation failed", 
+          details: [{ field: "password", issue: "Minimum 8 characters required" }] 
+        });
+      } else if (email === "user@example.com" && password === "Secret@123") {
+        setResponse(200, {
+          token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfMDFIWFlaMTIzNDU2IiwiaWF0IjoxNzE4MjE1NjIyfQ.xyz...",
+          tokenType: "Bearer",
+          expiresIn: 86400,
+          user: {
+            id: "usr_01HXYZ123456",
+            name: "John Doe",
+            email: "user@example.com",
+            role: "admin"
+          }
+        });
+      } else if (email === "user@example.com") {
+        setResponse(401, { status: 401, error: "Unauthorized", message: "Invalid email or password" });
+      } else {
+        setResponse(404, { status: 404, error: "Not Found", message: "No account found with this email address" });
+      }
+    }
+
+    function setResponse(code, body) {
+      const badge = document.getElementById('res-code-badge');
+      const output = document.getElementById('response-body-output');
+      const date = document.getElementById('res-date');
+
+      badge.innerText = code;
+      badge.className = "status-badge " + getCodeClass(code);
+      output.value = JSON.stringify(body, null, 2);
+      date.innerText = new Date().toUTCString();
+    }
+
+    function getCodeClass(code) {
+      if (code === 200) return "code-200";
+      if ([400, 401, 404, 500].includes(code)) return "code-400";
+      if ([422, 423].includes(code)) return "code-422";
+      return "";
     }
   </script>
 </body>
