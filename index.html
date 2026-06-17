@@ -1,888 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Swagger UI - Login API</title>
-  
-  <!-- Google Fonts: Open Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-  
-  <style>
-    :root {
-      --primary-blue: #61affe;
-      --primary-blue-dark: #4990e2;
-      --bg-light: #fafafa;
-      --text-main: #3b4151;
-      --header-bg: #1b1b1b;
-      --border-color: #d9d9d9;
-      --post-bg: #ebf3fb;
-      --post-border: #61affe;
-      --success-green: #49cc90;
-      --error-red: #f93e3e;
-      --warn-orange: #fca130;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to use AI in software testing. Test cases, automation, bug reports, API testing and more.">
+    <title>AI in Software Testing — Automation Test Crew</title>
+    <style>
+        :root {
+            --bg-color: #0D1117;
+            --card-bg: #161B22;
+            --primary-accent: #00D4AA;
+            --secondary-accent: #7C3AED;
+            --text-color: #FFFFFF;
+            --muted-text: #8B949E;
+            --border-color: #1C2530;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Open Sans', sans-serif;
-      background-color: var(--bg-light);
-      color: var(--text-main);
-      padding-bottom: 50px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Header */
-    .topbar {
-      background-color: var(--header-bg);
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 50px;
-    }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    .topbar-left { display: flex; align-items: center; gap: 10px; }
-    .logo-text { color: white; font-weight: 700; font-size: 20px; display: flex; align-items: center; gap: 5px; }
-    .logo-text span { color: #85ea2d; } /* Swagger green */
-    
-    .topbar-right select {
-      padding: 5px 10px;
-      background: white;
-      border: 1px solid #333;
-      border-radius: 4px;
-      font-size: 13px;
-    }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-stack);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-    /* Main Container */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
 
-    /* Info Block */
-    .info { margin-bottom: 40px; }
-    .info h1 { font-size: 36px; margin-bottom: 10px; font-weight: 700; }
-    .info .version {
-      background: #7d8492;
-      color: white;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-size: 10px;
-      font-weight: 700;
-      vertical-align: middle;
-      margin-left: 10px;
-    }
-    .info p { margin-bottom: 10px; font-size: 14px; }
-    .info .base-url { font-size: 12px; font-family: monospace; color: #666; }
-    .info .schemes { margin-top: 15px; font-size: 13px; font-weight: 600; }
+        /* Sticky Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    /* Endpoint Bar */
-    .opblock-tag-section { margin-top: 20px; }
-    .opblock {
-      border: 1px solid var(--post-border);
-      border-radius: 4px;
-      background: var(--post-bg);
-      margin-bottom: 10px;
-      overflow: hidden;
-    }
+        .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary-accent);
+        }
 
-    .opblock-summary {
-      padding: 5px 10px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-    }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
 
-    .opblock-method {
-      background: var(--primary-blue);
-      color: white;
-      font-weight: 700;
-      min-width: 80px;
-      padding: 6px 0;
-      text-align: center;
-      border-radius: 3px;
-      font-size: 14px;
-      margin-right: 10px;
-    }
+        .nav-links a:hover {
+            color: var(--primary-accent);
+        }
 
-    .opblock-path {
-      font-weight: 600;
-      font-family: monospace;
-      font-size: 16px;
-      flex: 1;
-    }
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
 
-    .opblock-description {
-      font-size: 13px;
-      color: #3b4151;
-      margin-right: 20px;
-    }
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-color);
+            transition: 0.3s;
+        }
 
-    .arrow {
-      border: solid #3b4151;
-      border-width: 0 2px 2px 0;
-      display: inline-block;
-      padding: 3px;
-      transform: rotate(45deg);
-      transition: transform 0.2s;
-    }
-    .expanded .arrow { transform: rotate(-135deg); }
+        /* Hero Section */
+        .hero {
+            position: relative;
+            padding: 8rem 5% 6rem;
+            text-align: left;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
 
-    /* Expanded Content */
-    .opblock-body {
-      background: #fff;
-      border-top: 1px solid var(--post-border);
-      display: none;
-      padding: 20px;
-    }
-    .expanded .opblock-body { display: block; }
+        .hero-label {
+            display: inline-block;
+            border: 1px solid var(--primary-accent);
+            color: var(--primary-accent);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
 
-    .section-title {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: var(--text-main);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
 
-    /* Buttons */
-    .btn {
-      padding: 5px 23px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: 'Open Sans', sans-serif;
-      transition: all 0.3s;
-    }
-    .btn-try {
-      background: white;
-      border: 2px solid var(--primary-blue);
-      color: var(--primary-blue);
-    }
-    .btn-try:hover { background: rgba(97, 175, 254, 0.1); }
-    .btn-cancel {
-      background: white;
-      border: 2px solid var(--error-red);
-      color: var(--error-red);
-    }
-    .btn-execute {
-      background: var(--primary-blue-dark);
-      border: 2px solid var(--primary-blue-dark);
-      color: white;
-      margin-top: 10px;
-      width: 100%;
-      font-size: 14px;
-      padding: 10px;
-    }
-    .btn-clear {
-      background: white;
-      border: 2px solid #666;
-      color: #666;
-      margin-top: 10px;
-      margin-left: 10px;
-      padding: 10px 23px;
-    }
+        .hero .tagline {
+            color: var(--muted-text);
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
 
-    /* Body/Parameters */
-    .opblock-section { margin-bottom: 20px; }
-    .parameter-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    .parameter-table th { text-align: left; font-size: 12px; border-bottom: 1px solid #ddd; padding: 10px 5px; }
-    .parameter-table td { padding: 10px 5px; font-size: 13px; border-bottom: 1px solid #eee; }
+        .hero p {
+            max-width: 700px;
+            color: var(--text-color);
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
 
-    .model-example-panel { margin-top: 10px; }
-    .tab-header { display: flex; gap: 10px; border-bottom: 1px solid #ddd; margin-bottom: 10px; }
-    .tab-link {
-      padding: 5px 10px;
-      font-size: 12px;
-      color: #666;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-    }
-    .tab-link.active { color: var(--text-main); border-bottom-color: #333; font-weight: 700; }
+        .btn-subscribe {
+            display: inline-block;
+            border: 2px solid var(--primary-accent);
+            color: var(--primary-accent);
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
 
-    textarea {
-      width: 100%;
-      min-height: 150px;
-      background: #fdfdfd;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 10px;
-      font-family: monospace;
-      font-size: 13px;
-      color: #3b4151;
-      resize: vertical;
-    }
-    textarea:focus { outline: none; border-color: #888; }
-    textarea[readonly] { background: #f7f7f7; cursor: default; }
+        .btn-subscribe:hover {
+            background-color: var(--primary-accent);
+            color: var(--bg-color);
+        }
 
-    /* Responses */
-    .response-row { border-bottom: 1px solid #eee; }
-    .response-header {
-      padding: 10px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      cursor: pointer;
-    }
-    .response-col-code { font-weight: 700; font-size: 14px; min-width: 50px; }
-    .response-col-desc { font-size: 13px; flex: 1; }
-    
-    .code-200 { color: var(--success-green); }
-    .code-400, .code-401, .code-404, .code-500 { color: var(--error-red); }
-    .code-422, .code-423 { color: var(--warn-orange); }
+        .hero-subtext {
+            display: block;
+            color: var(--muted-text);
+            font-size: 0.875rem;
+        }
 
-    .response-body { display: none; padding: 15px; background: #fafafa; border-top: 1px solid #eee; }
-    .response-row.expanded .response-body { display: block; }
+        /* Decorative Circles */
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.2;
+        }
 
-    /* Execution Results */
-    .execute-result { margin-top: 20px; border-top: 2px solid #333; padding-top: 20px; }
-    .result-block { margin-bottom: 20px; }
-    .result-block h4 { font-size: 13px; margin-bottom: 5px; font-weight: 700; }
-    .code-block {
-      background: #333;
-      color: #fff;
-      padding: 15px;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 12px;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-    .response-panel {
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: white;
-      padding: 10px;
-    }
-    .response-meta { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-    .status-badge { font-weight: 700; font-size: 13px; }
+        .circle-purple {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary-accent);
+            top: -100px;
+            right: -100px;
+        }
 
-    /* Schemas Section */
-    .schemas-container {
-      margin-top: 40px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: #fff;
-    }
-    .schemas-header {
-      padding: 10px 20px;
-      background: #fafafa;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #ddd;
-    }
-    .schemas-header h2 { font-size: 16px; font-weight: 700; color: #3b4151; }
-    .schemas-body { display: none; }
-    .schemas-container.expanded .schemas-body { display: block; }
+        .circle-teal {
+            width: 400px;
+            height: 400px;
+            background: var(--primary-accent);
+            bottom: -100px;
+            left: -100px;
+        }
 
-    .schema-row { border-bottom: 1px solid #eee; }
-    .schema-summary {
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      font-family: monospace;
-    }
-    .schema-details { display: none; padding: 10px 20px; background: #f9f9f9; }
-    .schema-row.expanded .schema-details { display: block; }
+        /* Sections General */
+        section {
+            padding: 4rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-    .field-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .field-table td { padding: 5px; border-bottom: 1px solid #eee; }
-    .field-name { font-weight: 700; font-family: monospace; }
-    .field-type { color: #888; margin-left: 10px; }
-    .field-required { color: #f00; font-weight: 700; margin-left: 5px; }
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
 
-    /* Utilities */
-    .hidden { display: none; }
-    .mono { font-family: monospace; }
-  </style>
+        .section-subtitle {
+            color: var(--muted-text);
+            margin-bottom: 3rem;
+        }
+
+        /* Grid Layouts */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary-accent);
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px -10px rgba(0, 212, 170, 0.3);
+        }
+
+        .episode-badge {
+            display: inline-block;
+            background-color: transparent;
+            border: 1px solid var(--primary-accent);
+            color: var(--primary-accent);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 50px;
+            margin-bottom: 1rem;
+            align-self: flex-start;
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .card p {
+            color: var(--muted-text);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-accent);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Resource Card Button */
+        .btn-resource {
+            display: inline-block;
+            border: 1px solid var(--primary-accent);
+            color: var(--primary-accent);
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 500;
+            text-align: center;
+            width: fit-content;
+        }
+
+        .btn-resource:hover {
+            background-color: var(--primary-accent);
+            color: var(--bg-color);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-color);
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 5% 2rem;
+            text-align: center;
+        }
+
+        footer .logo {
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .footer-tagline {
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .copyright {
+            color: var(--muted-text);
+            font-size: 0.8rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 5%;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-color);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                border-bottom: 1px solid var(--border-color);
+                display: none;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .video-grid, .resource-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding-top: 5rem;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="topbar">
-    <div class="topbar-left">
-      <div class="logo-text">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="white"/>
-          <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        swagger
-      </div>
-    </div>
-    <div class="topbar-right" style="display: flex; align-items: center; gap: 20px;">
-      <a href="https://www.youtube.com/@automationtestcrew" target="_blank" style="color: white; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000" xmlns="http://www.w3.org/2000/svg">
-          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z" />
-          <path d="M9.545 15.568l6.273-3.568-6.273-3.568v7.136z" fill="white" />
-        </svg>
-        AutomationTestCrew
-      </a>
-      <select>
-        <option>https://api.example.com/v1</option>
-        <option>https://staging.example.com/v1</option>
-      </select>
-    </div>
-  </header>
-
-  <div class="container">
-    
-    <!-- Info Section -->
-    <div class="info">
-      <h1>Login API <span class="version">1.0.0</span></h1>
-      <p>API for authenticating users. Secure your application with JWT-based login.</p>
-      <div class="base-url">[ Base URL: api.example.com/v1 ]</div>
-      <div class="schemes">Schemes: HTTPS</div>
-    </div>
-
-    <!-- Endpoint Section -->
-    <div class="opblock-tag-section">
-      <div class="opblock expanded" id="login-op">
-        <div class="opblock-summary" onclick="toggleMainOp()">
-          <div class="opblock-method">POST</div>
-          <div class="opblock-path">/auth/login</div>
-          <div class="opblock-description">User Login</div>
-          <div class="arrow"></div>
+    <nav>
+        <div class="logo">Automation Test Crew</div>
+        <div class="nav-links" id="navLinks">
+            <a href="#home">Home</a>
+            <a href="#videos">Videos</a>
+            <a href="#resources">Resources</a>
         </div>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <header class="hero" id="home">
+        <div class="circle circle-purple"></div>
+        <div class="circle circle-teal"></div>
         
-        <div class="opblock-body">
-          <div class="section-title">
-            Parameters
-            <button class="btn btn-try" id="try-out-btn" onclick="toggleTryOut()">Try it out</button>
-            <button class="btn btn-cancel hidden" id="cancel-btn" onclick="toggleTryOut()">Cancel</button>
-          </div>
-          
-          <div class="opblock-section">
-            <p style="font-size: 13px; color: #666;">No parameters</p>
-          </div>
-
-          <div class="section-title">Request body</div>
-          <div class="opblock-section">
-            <div style="font-size: 12px; margin-bottom: 5px;">
-              Content type <span style="font-weight: 700;">application/json</span>
-            </div>
-            
-            <div class="model-example-panel">
-              <div class="tab-header">
-                <div class="tab-link active" id="tab-example" onclick="switchReqTab('example')">Example Value</div>
-                <div class="tab-link" id="tab-schema" onclick="switchReqTab('schema')">Schema</div>
-              </div>
-              
-              <!-- Example View -->
-              <div id="view-example">
-                <textarea id="request-body-input" readonly>{
-  "email": "user@example.com",
-  "password": "Secret@123"
-}</textarea>
-              </div>
-
-              <!-- Schema View -->
-              <div id="view-schema" class="hidden">
-                <div style="font-family: monospace; font-size: 12px; background: #f7f7f7; padding: 15px; border-radius: 4px;">
-                  {<br>
-                  &nbsp;&nbsp;<span style="color: #3b4151; font-weight: 700;">email</span> (<span style="color: #999;">string</span>): Registered email address <span style="color:red">*</span>,<br>
-                  &nbsp;&nbsp;<span style="color: #3b4151; font-weight: 700;">password</span> (<span style="color: #999;">string</span>): Account password (min 8 chars) <span style="color:red">*</span><br>
-                  }
-                </div>
-              </div>
-
-              <div id="execution-controls" class="hidden">
-                <button class="btn btn-execute" onclick="execute()">Execute</button>
-                <button class="btn btn-clear" onclick="clearResult()">Clear</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Responses -->
-          <div class="section-title">Responses</div>
-          <div class="opblock-section">
-            <table class="parameter-table">
-              <thead>
-                <tr>
-                  <th style="width: 100px;">Code</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-            </table>
-            
-            <div id="responses-list">
-              <!-- 200 -->
-              <div class="response-row" id="row-200">
-                <div class="response-header" onclick="toggleResponseRow('row-200')">
-                  <div class="response-col-code code-200">200</div>
-                  <div class="response-col-desc">Login successful</div>
-                </div>
-                <div class="response-body">
-                  <div class="mono" style="font-size: 12px;">LoginSuccess Schema</div>
-                </div>
-              </div>
-              
-              <!-- 400 -->
-              <div class="response-row" id="row-400">
-                <div class="response-header" onclick="toggleResponseRow('row-400')">
-                  <div class="response-col-code code-400">400</div>
-                  <div class="response-col-desc">Missing/empty fields</div>
-                </div>
-                <div class="response-body">
-                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
-                </div>
-              </div>
-
-              <!-- 401 -->
-              <div class="response-row" id="row-401">
-                <div class="response-header" onclick="toggleResponseRow('row-401')">
-                  <div class="response-col-code code-401">401</div>
-                  <div class="response-col-desc">Wrong password</div>
-                </div>
-                <div class="response-body">
-                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
-                </div>
-              </div>
-
-              <!-- 404 -->
-              <div class="response-row" id="row-404">
-                <div class="response-header" onclick="toggleResponseRow('row-404')">
-                  <div class="response-col-code code-404">404</div>
-                  <div class="response-col-desc">Email not found</div>
-                </div>
-                <div class="response-body">
-                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
-                </div>
-              </div>
-
-              <!-- 422 -->
-              <div class="response-row" id="row-422">
-                <div class="response-header" onclick="toggleResponseRow('row-422')">
-                  <div class="response-col-code code-422">422</div>
-                  <div class="response-col-desc">Invalid email format or password too short</div>
-                </div>
-                <div class="response-body">
-                  <div class="mono" style="font-size: 12px;">ValidationErrorResponse Schema</div>
-                </div>
-              </div>
-
-              <!-- 423 -->
-              <div class="response-row" id="row-423">
-                <div class="response-header" onclick="toggleResponseRow('row-423')">
-                  <div class="response-col-code code-423">423</div>
-                  <div class="response-col-desc">Account locked</div>
-                </div>
-                <div class="response-body">
-                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
-                </div>
-              </div>
-
-              <!-- 500 -->
-              <div class="response-row" id="row-500">
-                <div class="response-header" onclick="toggleResponseRow('row-500')">
-                  <div class="response-col-code code-500">500</div>
-                  <div class="response-col-desc">Internal server error</div>
-                </div>
-                <div class="response-body">
-                  <div class="mono" style="font-size: 12px;">ErrorResponse Schema</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Execution Results Container -->
-          <div id="execute-result-container" class="execute-result hidden">
-            <div class="result-block">
-              <h4>Curl</h4>
-              <div class="code-block" id="curl-display"></div>
-            </div>
-            <div class="result-block">
-              <h4>Request URL</h4>
-              <div class="code-block" style="background: #f7f7f7; color: #333;" id="request-url-display"></div>
-            </div>
-            <div class="result-block">
-              <h4>Server response</h4>
-              <div class="response-panel">
-                <div class="response-meta">
-                  <span>Code</span>
-                  <span id="res-code-badge" class="status-badge"></span>
-                </div>
-                <h4>Details</h4>
-                <textarea id="response-body-output" readonly style="min-height: 200px; margin-bottom: 15px;"></textarea>
-                <h4>Response headers</h4>
-                <div class="code-block" style="background: #f7f7f7; color: #333; padding: 10px;">
-content-type: application/json; charset=utf-8 
-date: <span id="res-date"></span> 
-server: example-api/1.0.0 
-x-powered-by: Express
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Schemas Section -->
-    <div class="schemas-container" id="schemas-section">
-      <div class="schemas-header" onclick="toggleSchemas()">
-        <h2>Schemas</h2>
-        <div class="arrow"></div>
-      </div>
-      <div class="schemas-body">
-        
-        <!-- LoginRequest -->
-        <div class="schema-row" id="schema-login-req">
-          <div class="schema-summary" onclick="toggleSchemaRow('schema-login-req')">
-            <span>LoginRequest</span>
-            <div class="arrow"></div>
-          </div>
-          <div class="schema-details">
-            <table class="field-table">
-              <tr><td class="field-name">email</td><td class="field-type">string</td><td class="field-required">*</td><td>Registered email address</td></tr>
-              <tr><td class="field-name">password</td><td class="field-type">string</td><td class="field-required">*</td><td>Account password (min 8 characters)</td></tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- LoginSuccess -->
-        <div class="schema-row" id="schema-login-success">
-          <div class="schema-summary" onclick="toggleSchemaRow('schema-login-success')">
-            <span>LoginSuccess</span>
-            <div class="arrow"></div>
-          </div>
-          <div class="schema-details">
-            <table class="field-table">
-              <tr><td class="field-name">token</td><td class="field-type">string</td><td></td><td>JWT authentication token</td></tr>
-              <tr><td class="field-name">tokenType</td><td class="field-type">string</td><td></td><td>Always "Bearer"</td></tr>
-              <tr><td class="field-name">expiresIn</td><td class="field-type">integer</td><td></td><td>Lifetime in seconds (86400)</td></tr>
-              <tr><td class="field-name">user</td><td class="field-type">UserObject</td><td></td><td>User profile details</td></tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- UserObject -->
-        <div class="schema-row" id="schema-user-obj">
-          <div class="schema-summary" onclick="toggleSchemaRow('schema-user-obj')">
-            <span>UserObject</span>
-            <div class="arrow"></div>
-          </div>
-          <div class="schema-details">
-            <table class="field-table">
-              <tr><td class="field-name">id</td><td class="field-type">string</td><td></td><td>Unique user identifier</td></tr>
-              <tr><td class="field-name">name</td><td class="field-type">string</td><td></td><td>User's full name</td></tr>
-              <tr><td class="field-name">email</td><td class="field-type">string</td><td></td><td>User's email</td></tr>
-              <tr><td class="field-name">role</td><td class="field-type">string</td><td></td><td>One of: admin, editor, viewer</td></tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- ErrorResponse -->
-        <div class="schema-row" id="schema-error">
-          <div class="schema-summary" onclick="toggleSchemaRow('schema-error')">
-            <span>ErrorResponse</span>
-            <div class="arrow"></div>
-          </div>
-          <div class="schema-details">
-            <table class="field-table">
-              <tr><td class="field-name">status</td><td class="field-type">integer</td><td></td><td>HTTP status code</td></tr>
-              <tr><td class="field-name">error</td><td class="field-type">string</td><td></td><td>Error title</td></tr>
-              <tr><td class="field-name">message</td><td class="field-type">string</td><td></td><td>Error explanation</td></tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- ValidationErrorResponse -->
-        <div class="schema-row" id="schema-validation">
-          <div class="schema-summary" onclick="toggleSchemaRow('schema-validation')">
-            <span>ValidationErrorResponse</span>
-            <div class="arrow"></div>
-          </div>
-          <div class="schema-details">
-            <table class="field-table">
-              <tr><td class="field-name">status</td><td class="field-type">integer</td><td></td><td>422</td></tr>
-              <tr><td class="field-name">details</td><td class="field-type">array[object]</td><td></td><td>List of field errors</td></tr>
-            </table>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- API Contract Section -->
-    <div class="schemas-container" id="contract-section" style="margin-top: 20px;">
-      <div class="schemas-header" onclick="toggleContract()">
-        <h2>API Description (JIRA Ticket #AUT-101)</h2>
-        <div class="arrow"></div>
-      </div>
-      <div class="schemas-body" id="contract-body" style="padding: 20px;">
-        <div style="margin-bottom: 20px; padding: 15px; background: rgba(97, 175, 254, 0.05); border-left: 4px solid var(--primary-blue); border-radius: 0 4px 4px 0;">
-          <h4 style="font-size: 14px; color: var(--primary-blue); margin-bottom: 8px;">Project Context</h4>
-          <p style="font-size: 13px; color: #3b4151; margin-bottom: 8px;">
-            <strong>What API:</strong> This is a RESTful <strong>Authentication API (Login API)</strong> that handles user credential validation and session token generation.
-          </p>
-          <p style="font-size: 13px; color: #3b4151; margin-bottom: 8px;">
-            <strong>Why it will be used:</strong> It serves as a controlled sandbox for <strong>API Automation Testing</strong>. It will be used to practice schema validation, negative testing, and security assertions using tools like Playwright and Supertest.
-          </p>
-          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(97, 175, 254, 0.3);">
-            <strong style="font-size: 13px; color: #3b4151; display: block; margin-bottom: 5px;">How it should work:</strong>
-            <ol style="font-size: 12px; color: #3b4151; padding-left: 20px;">
-              <li style="margin-bottom: 4px;"><strong>Request:</strong> Client sends a POST request with <code>email</code> and <code>password</code>.</li>
-              <li style="margin-bottom: 4px;"><strong>Format Check:</strong> System validates email format and ensures password is ≥ 8 chars (returns 422 if fail).</li>
-              <li style="margin-bottom: 4px;"><strong>Verification:</strong> System verifies credentials against the database (returns 401 or 404 if fail).</li>
-              <li style="margin-bottom: 4px;"><strong>Security:</strong> After 5 consecutive failures, the account is locked for 30 minutes (returns 423).</li>
-              <li><strong>Success:</strong> Returns 200 OK with a 24-hour JWT <code>token</code> and the <code>user</code> profile object.</li>
-            </ol>
-          </div>
-        </div>
-        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
-          The following is the plain-text API specification from the development ticket. 
-          Use this as a reference for expected request and response structures.
+        <span class="hero-label">AI in Software Testing</span>
+        <h1>Automation Test Crew</h1>
+        <div class="tagline">Your shortcut to becoming a modern, high-output QA Engineer</div>
+        <p>
+            Testing is changing faster than ever. AI is cutting hours of 
+            manual work down to minutes. This playlist shows you exactly 
+            how to use AI as a QA Engineer — from test case generation to 
+            automation scripts, bug reports, API testing and much more. 
+            All practical. All hands-on.
         </p>
-        <div class="code-block" style="background: #f7f7f7; color: #333; position: relative;">
-          <button class="btn btn-try" style="position: absolute; top: 10px; right: 10px; padding: 2px 10px; font-size: 10px;" onclick="copyContract()">Copy Text</button>
-          <pre id="yaml-content" style="margin: 0; font-size: 12px; line-height: 1.5; color: #3b4151;">Endpoint: POST /auth/login
+        <a href="https://www.youtube.com/@AutomationTestCrew" target="_blank" rel="noopener noreferrer" class="btn-subscribe">Subscribe on YouTube</a>
+        <span class="hero-subtext">Free playlist • New videos every week</span>
+    </header>
 
-### Request Body (application/json):
-{
-  "email": "user@example.com",      // required, valid email format
-  "password": "Secret@123"          // required, minimum 8 characters
-}
-
-### Responses:
-
-200 — Login Successful:
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "tokenType": "Bearer",
-  "expiresIn": 86400,
-  "user": {
-    "id": "usr_01HXYZ123456",
-    "name": "John Doe",
-    "email": "user@example.com",
-    "role": "admin"         // enum: admin, editor, viewer
-  }
-}
-
-400 — Bad Request (missing/empty fields):
-{
-  "status": 400,
-  "error": "Bad Request",
-  "message": "Email and password are required"
-}
-
-401 — Unauthorized (wrong password):
-{
-  "status": 401,
-  "error": "Unauthorized",
-  "message": "Invalid email or password"
-}
-
-404 — Not Found (email doesn't exist):
-{
-  "status": 404,
-  "error": "Not Found",
-  "message": "No account found with this email address"
-}
-
-422 — Validation Error (invalid format):
-{
-  "status": 422,
-  "error": "Unprocessable Entity",
-  "message": "Validation failed",
-  "details": [
-    { "field": "email", "issue": "Must be a valid email address" },
-    { "field": "password", "issue": "Minimum 8 characters required" }
-  ]
-}
-
-423 — Locked (5 failed attempts):
-{
-  "status": 423,
-  "error": "Locked",
-  "message": "Account locked due to too many failed attempts. Try again after 30 minutes."
-}
-
-500 — Internal Server Error:
-{
-  "status": 500,
-  "error": "Internal Server Error",
-  "message": "Something went wrong. Please try again later."
-}</pre>
+    <section id="videos">
+        <h2 class="section-title">Playlist Videos</h2>
+        <p class="section-subtitle">Click any video to watch on YouTube</p>
+        
+        <div class="video-grid">
+            <!-- Card 1 -->
+            <a href="https://youtu.be/Vn0ahQyqCuw" target="_blank" rel="noopener noreferrer" class="card">
+                <span class="episode-badge">EP 01</span>
+                <h3>Start Here — AI in Software Testing for QA Engineers (2026)</h3>
+                <p>An introduction to using AI in your QA workflow and an overview of what we are going to learn in this entire playlist.</p>
+                <div class="card-footer">
+                    <span>▶</span> Watch on YouTube
+                </div>
+            </a>
+            <!-- Card 2 -->
+            <a href="https://www.youtube.com/@AutomationTestCrew" target="_blank" rel="noopener noreferrer" class="card">
+                <span class="episode-badge">EP 02</span>
+                <h3>How to Generate Test Cases Using ChatGPT in Minutes</h3>
+                <p>Learn how to leverage ChatGPT to create comprehensive test cases, edge cases, and test data from requirements in seconds, significantly speeding up your testing lifecycle.</p>
+                <div class="card-footer">
+                    <span>▶</span> Watch on YouTube
+                </div>
+            </a>
+            <!-- Card 3 -->
+            <a href="https://www.youtube.com/@AutomationTestCrew" target="_blank" rel="noopener noreferrer" class="card">
+                <span class="episode-badge">EP 03</span>
+                <h3>Coming Soon — AI in Software Testing</h3>
+                <p>This video will cover how to use AI in your QA workflow. Click to watch on YouTube.</p>
+                <div class="card-footer">
+                    <span>▶</span> Watch on YouTube
+                </div>
+            </a>
+            <!-- Card 4 -->
+            <a href="https://www.youtube.com/@AutomationTestCrew" target="_blank" rel="noopener noreferrer" class="card">
+                <span class="episode-badge">EP 04</span>
+                <h3>Coming Soon — AI in Software Testing</h3>
+                <p>This video will cover how to use AI in your QA workflow. Click to watch on YouTube.</p>
+                <div class="card-footer">
+                    <span>▶</span> Watch on YouTube
+                </div>
+            </a>
+            <!-- Card 5 -->
+            <a href="https://www.youtube.com/@AutomationTestCrew" target="_blank" rel="noopener noreferrer" class="card">
+                <span class="episode-badge">EP 05</span>
+                <h3>Coming Soon — AI in Software Testing</h3>
+                <p>This video will cover how to use AI in your QA workflow. Click to watch on YouTube.</p>
+                <div class="card-footer">
+                    <span>▶</span> Watch on YouTube
+                </div>
+            </a>
+            <!-- Card 6 -->
+            <a href="https://www.youtube.com/@AutomationTestCrew" target="_blank" rel="noopener noreferrer" class="card">
+                <span class="episode-badge">EP 06</span>
+                <h3>Coming Soon — AI in Software Testing</h3>
+                <p>This video will cover how to use AI in your QA workflow. Click to watch on YouTube.</p>
+                <div class="card-footer">
+                    <span>▶</span> Watch on YouTube
+                </div>
+            </a>
         </div>
-      </div>
-    </div>
+    </section>
 
-  </div>
+    <section id="resources">
+        <h2 class="section-title">Resources</h2>
+        <p class="section-subtitle">Everything you need in one place</p>
+        
+        <div class="resource-grid">
+            <div class="card">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">📄</div>
+                <h3>API Testing Reference</h3>
+                <p>Complete Swagger API documentation for practicing API testing. Explore endpoints, request and response formats.</p>
+                <a href="https://automationtestcrew.github.io/API-Testing/" target="_blank" rel="noopener noreferrer" class="btn-resource">Open Swagger Docs</a>
+            </div>
+            <div class="card">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">🤖</div>
+                <h3>AI Prompt to Generate Test Cases</h3>
+                <p>Get the ultimate AI prompt designed to generate high-quality test cases, edge cases, and automation-ready scripts from your requirements.</p>
+                <a href="https://docs.google.com/document/d/12SnC96tq3uHNWY01PhjX8OIlKaTVQluh9hB2vCdnMv8/edit?tab=t.0#heading=h.balekf2t5ygj" target="_blank" rel="noopener noreferrer" class="btn-resource">Get the Prompt</a>
+            </div>
+        </div>
+    </section>
 
-  <script>
-    // --- UI Interactions ---
+    <footer>
+        <div class="logo">Automation Test Crew</div>
+        <span class="footer-tagline">Learn. Build. Level Up.</span>
+        <div class="social-links">
+            <a href="https://www.youtube.com/@AutomationTestCrew" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a href="https://instagram.com/automationtest_crew" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+        <p class="copyright">© 2025 Automation Test Crew. All rights reserved.</p>
+    </footer>
 
-    function toggleMainOp() {
-      document.getElementById('login-op').classList.toggle('expanded');
-    }
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
 
-    function toggleResponseRow(id) {
-      document.getElementById(id).classList.toggle('expanded');
-    }
-
-    function toggleSchemas() {
-      document.getElementById('schemas-section').classList.toggle('expanded');
-    }
-
-    function toggleContract() {
-      const section = document.getElementById('contract-section');
-      section.classList.toggle('expanded');
-      const body = document.getElementById('contract-body');
-      body.style.display = section.classList.contains('expanded') ? 'block' : 'none';
-    }
-
-    function copyContract() {
-      const yaml = document.getElementById('yaml-content').innerText;
-      navigator.clipboard.writeText(yaml).then(() => {
-        const btn = event.target;
-        const original = btn.innerText;
-        btn.innerText = "Copied! ✓";
-        btn.style.borderColor = "#49cc90";
-        btn.style.color = "#49cc90";
-        setTimeout(() => {
-          btn.innerText = original;
-          btn.style.borderColor = "";
-          btn.style.color = "";
-        }, 2000);
-      });
-    }
-
-    function toggleSchemaRow(id) {
-      document.getElementById(id).classList.toggle('expanded');
-    }
-
-    function switchReqTab(tab) {
-      document.getElementById('tab-example').classList.remove('active');
-      document.getElementById('tab-schema').classList.remove('active');
-      document.getElementById('view-example').classList.add('hidden');
-      document.getElementById('view-schema').classList.add('hidden');
-
-      if (tab === 'example') {
-        document.getElementById('tab-example').classList.add('active');
-        document.getElementById('view-example').classList.remove('hidden');
-      } else {
-        document.getElementById('tab-schema').classList.add('active');
-        document.getElementById('view-schema').classList.remove('hidden');
-      }
-    }
-
-    function toggleTryOut() {
-      const isTryMode = document.getElementById('try-out-btn').classList.toggle('hidden');
-      document.getElementById('cancel-btn').classList.toggle('hidden');
-      document.getElementById('execution-controls').classList.toggle('hidden');
-      
-      const textarea = document.getElementById('request-body-input');
-      if (isTryMode) {
-        textarea.removeAttribute('readonly');
-        textarea.focus();
-      } else {
-        textarea.setAttribute('readonly', 'true');
-        clearResult();
-      }
-    }
-
-    function clearResult() {
-      document.getElementById('execute-result-container').classList.add('hidden');
-    }
-
-    // --- Simulation Logic ---
-
-    function execute() {
-      const inputStr = document.getElementById('request-body-input').value;
-      const curlDisplay = document.getElementById('curl-display');
-      const urlDisplay = document.getElementById('request-url-display');
-      const resultContainer = document.getElementById('execute-result-container');
-      
-      const baseUrl = "https://api.example.com/v1";
-      const path = "/auth/login";
-      const fullUrl = baseUrl + path;
-
-      // Update URL and Curl display
-      urlDisplay.innerText = fullUrl;
-      curlDisplay.innerText = `curl -X 'POST' \\\n  '${fullUrl}' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '${inputStr.replace(/'/g, "\\'")}'`;
-
-      resultContainer.classList.remove('hidden');
-      resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      let input;
-      try {
-        input = JSON.parse(inputStr);
-      } catch (e) {
-        setResponse(400, { status: 400, error: "Bad Request", message: "Invalid JSON format" });
-        return;
-      }
-
-      // Simulation Rules
-      const email = input.email || "";
-      const password = input.password || "";
-
-      if (!email || !password) {
-        setResponse(400, { status: 400, error: "Bad Request", message: "Email and password are required" });
-      } else if (email === "locked@example.com") {
-        setResponse(423, { status: 423, error: "Locked", message: "Account locked due to too many failed attempts. Try again after 30 minutes." });
-      } else if (email === "notfound@example.com") {
-        setResponse(404, { status: 404, error: "Not Found", message: "No account found with this email address" });
-      } else if (email === "error@example.com") {
-        setResponse(500, { status: 500, error: "Internal Server Error", message: "Something went wrong. Please try again later." });
-      } else if (!email.includes("@")) {
-        setResponse(422, { 
-          status: 422, error: "Unprocessable Entity", message: "Validation failed", 
-          details: [{ field: "email", issue: "Must be a valid email address" }] 
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // Hamburger animation
+            const spans = hamburger.querySelectorAll('span');
+            if (navLinks.classList.contains('active')) {
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 6px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(5px, -6px)';
+            } else {
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            }
         });
-      } else if (password.length < 8) {
-        setResponse(422, { 
-          status: 422, error: "Unprocessable Entity", message: "Validation failed", 
-          details: [{ field: "password", issue: "Minimum 8 characters required" }] 
+
+        // Close menu when link is clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const spans = hamburger.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            });
         });
-      } else if (email === "user@example.com" && password === "Secret@123") {
-        setResponse(200, {
-          token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfMDFIWFlaMTIzNDU2IiwiaWF0IjoxNzE4MjE1NjIyfQ.xyz...",
-          tokenType: "Bearer",
-          expiresIn: 86400,
-          user: {
-            id: "usr_01HXYZ123456",
-            name: "John Doe",
-            email: "user@example.com",
-            role: "admin"
-          }
-        });
-      } else if (email === "user@example.com") {
-        setResponse(401, { status: 401, error: "Unauthorized", message: "Invalid email or password" });
-      } else {
-        setResponse(404, { status: 404, error: "Not Found", message: "No account found with this email address" });
-      }
-    }
-
-    function setResponse(code, body) {
-      const badge = document.getElementById('res-code-badge');
-      const output = document.getElementById('response-body-output');
-      const date = document.getElementById('res-date');
-
-      badge.innerText = code;
-      badge.className = "status-badge " + getCodeClass(code);
-      output.value = JSON.stringify(body, null, 2);
-      date.innerText = new Date().toUTCString();
-    }
-
-    function getCodeClass(code) {
-      if (code === 200) return "code-200";
-      if ([400, 401, 404, 500].includes(code)) return "code-400";
-      if ([422, 423].includes(code)) return "code-422";
-      return "";
-    }
-  </script>
+    </script>
 </body>
 </html>
